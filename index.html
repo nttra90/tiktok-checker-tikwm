@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Check Tương Tác TikTok (TikWM API)</title>
+</head>
+<body>
+  <h2>🔍 Kiểm tra tương tác video TikTok</h2>
+  <input type="text" id="url" placeholder="Nhập link TikTok..." size="50" />
+  <button onclick="checkStats()">Check</button>
+
+  <div id="result" style="margin-top:20px;"></div>
+
+  <script>
+    async function checkStats() {
+      const url = document.getElementById('url').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '⏳ Đang kiểm tra...';
+
+      try {
+        // Thay YOUR_BACKEND_URL bằng link Render bạn deploy sau này
+        const res = await fetch(`https://YOUR_BACKEND_URL.onrender.com/api/stats?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+
+        if (data.error) {
+          resultDiv.innerHTML = `<p style="color:red;">❌ Lỗi: ${data.error}</p>`;
+          return;
+        }
+
+        resultDiv.innerHTML = `
+          <p>👁️ Lượt xem: ${data.views.toLocaleString()}</p>
+          <p>❤️ Lượt thích: ${data.likes.toLocaleString()}</p>
+          <p>💬 Bình luận: ${data.comments.toLocaleString()}</p>
+          <p>🔄 Chia sẻ: ${data.shares.toLocaleString()}</p>
+        `;
+      } catch (err) {
+        resultDiv.innerHTML = `<p style="color:red;">❌ Lỗi kết nối đến server</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
